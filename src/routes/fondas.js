@@ -15,19 +15,19 @@ router.get('/', async (ctx) => {
 });
 
 
-router.get('/:id/productos', async (ctx) => {
+router.get('/:id', async (ctx) => {
   try {
-    const productos = await getProductosByFondaId(ctx.params.id);
-    ctx.status = 200;
-    ctx.body = productos;
-  } catch (error) {
-    if (error.message === 'Fonda no encontrada') {
+    const fonda = await Fonda.findByPk(ctx.params.id);
+    if (!fonda) {
       ctx.status = 404;
       ctx.body = { error: 'Fonda no encontrada' };
-    } else {
-      ctx.status = 500;
-      ctx.body = { error: 'Ocurrió un error al buscar los  productos' };
+      return;
     }
+    ctx.status = 200;
+    ctx.body = fonda;
+  } catch (error) {
+    ctx.status = 500;
+    ctx.body = { error: 'Ocurrió un error al buscar la fonda' };
   }
 });
 
